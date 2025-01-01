@@ -141,72 +141,159 @@
         .hero .form-control:focus {
             background: white;
         }
+
+        /* 添加高亮样式 */
+        .search-result-item mark {
+            background-color: rgba(255, 229, 100, 0.5);
+            padding: 0.1em 0.2em;
+            border-radius: 2px;
+            color: inherit;
+        }
     </style>
 
     <!-- 搜索功能的 JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('siteSearch');
-            const searchResults = document.getElementById('searchResults');
-            let searchTimeout;
+class DynamicSiteSearch {
+    constructor() {
+        this.searchInput = document.getElementById('siteSearch');
+        this.searchResults = document.getElementById('searchResults');
+        this.pagesIndex = null;
+        this.init();
+    }
 
-            // 搜索数据（示例）
-            const searchData = [
-                {
-                    title: '准备工作',
-                    content: '现场勘察与沟通、安全讲解、屋顶准备工作',
-                    url: 'preparation.html'
-                },
-                {
-                    title: 'RT MINI安装',
-                    content: 'RT MINI准备、固定RT MINI、安装L-FOOT、最终调整',
-                    url: 'rt-mini.html'
-                },
-                {
-                    title: '工具与材料',
-                    content: '安装工具、安装材料、规格说明',
-                    url: 'tools.html'
-                },
-                // 可以继续添加更多搜索数据
-            ];
+    async init() {
+        // 定义要搜索的页面列表
+        const pages = [
+            { url: 'preparation.html', title: '准备工作' },
+            { url: 'rt-mini.html', title: 'RT MINI安装' },
+            { url: 'tools.html', title: '工具与材料' },
+            { url: 'installation.html', title: '安装流程' },
+            { url: 'safety.html', title: '安全规范' }
+        ];
 
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    const query = this.value.toLowerCase().trim();
+        try {
+            // 并行获取所有页面内容
+            this.pagesIndex = await Promise.all(
+                pages.map(async page => {
+                    const response = await fetch(page.url);
+                    const html = await response.text();
                     
-                    if (query.length < 2) {
-                        searchResults.classList.add('d-none');
-                        return;
-                    }
+                    // 创建临时 DOM 来解析内容
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    
+                    // 获取主要内容（这里假设主要内容在 main 标签内）
+                    const mainContent = doc.querySelector('main');
+                    const content = mainContent ? this.extractText(mainContent) : '';
 
-                    const filteredResults = searchData.filter(item => 
-                        item.title.toLowerCase().includes(query) || 
-                        item.content.toLowerCase().includes(query)
-                    );
+                    return {
+                        title: page.title,
+                        url: page.url,
+                        content: content
+                    };
+                })
+            );
 
-                    if (filteredResults.length > 0) {
-                        searchResults.innerHTML = filteredResults.map(result => `
-                            <div class="search-result-item" onclick="window.location.href='${result.url}'">
-                                <div class="search-result-title">${result.title}</div>
-                                <div class="search-result-content">${result.content}</div>
-                            </div>
-                        `).join('');
-                        searchResults.classList.remove('d-none');
-                    } else {
-                        searchResults.innerHTML = '<div class="p-3 text-center text-muted">未找到相关内容</div>';
-                        searchResults.classList.remove('d-none');
-                    }
-                }, 300);
-            });
+            this.setupEventListeners();
+            console.log('Search index built successfully');
+        } catch (error) {
+            console.error('Error building search index:', error);
+        }
+    }
 
-            // 点击其他地方关闭搜索结果
-            document.addEventListener('click', function(e) {
-                if (!searchResults.contains(e.target) && e.target !== searchInput) {
-                    searchResults.classList.add('d-none');
-                }
-            });
+    // 提取文本内容，去除多余空白
+    extractText(element) {
+        return element.textContent
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    setupEventListeners() {
+        let searchTimeout;
+        
+        this.searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => this.performSearch(), 300);
         });
+
+        document.addEventListener('click', (e) => {
+            if (!this.searchResults.contains(e.target) && e.target !== this.searchInput) {
+                this.searchResults.classList.add('d-none');
+            }
+        });
+    }
+
+    performSearch() {
+        const query = this.searchInput.value.toLowerCase().trim();
+        
+        if (query.length < 2) {
+            this.searchResults.classList.add('d-none');
+            return;
+        }
+
+        const results = this.pagesIndex
+            .filter(page => 
+                page.title.toLowerCase().includes(query) || 
+                page.content.toLowerCase().includes(query)
+            )
+            .map(page => {
+                const contentPreview = this.getContentPreview(page.content, query);
+                const highlightedTitle = this.highlightText(page.title, query);
+                const highlightedPreview = this.highlightText(contentPreview, query);
+                return {
+                    ...page,
+                    highlightedTitle,
+                    highlightedPreview
+                };
+            });
+
+        this.displayResults(results);
+    }
+
+    getContentPreview(content, query) {
+        const index = content.toLowerCase().indexOf(query);
+        if (index === -1) return content.slice(0, 150) + '...';
+
+        const start = Math.max(0, index - 50);
+        const end = Math.min(content.length, index + 100);
+        return (start > 0 ? '...' : '') + 
+               content.slice(start, end).trim() + 
+               (end < content.length ? '...' : '');
+    }
+
+    highlightText(text, query) {
+        if (!query) return text;
+        
+        const words = query.split(/\s+/).filter(word => word.length > 0);
+        let highlightedText = text;
+        
+        words.forEach(word => {
+            const regex = new RegExp(`(${word})`, 'gi');
+            highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+        });
+        
+        return highlightedText;
+    }
+
+    displayResults(results) {
+        if (results.length > 0) {
+            this.searchResults.innerHTML = results.map(result => `
+                <div class="search-result-item" onclick="window.location.href='${result.url}'">
+                    <div class="search-result-title">${result.highlightedTitle}</div>
+                    <div class="search-result-content">${result.highlightedPreview}</div>
+                </div>
+            `).join('');
+        } else {
+            this.searchResults.innerHTML = '<div class="p-3 text-center text-muted">未找到相关内容</div>';
+        }
+        
+        this.searchResults.classList.remove('d-none');
+    }
+}
+
+// 初始化搜索
+document.addEventListener('DOMContentLoaded', () => {
+    new DynamicSiteSearch();
+});
     </script>
 </body>
 </html>
