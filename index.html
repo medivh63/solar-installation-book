@@ -10,13 +10,35 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <main>
         <!-- 英雄区域 -->
-        <section class="hero bg-primary text-white text-center py-5 mb-5">
+        <section class="hero bg-primary text-white text-center py-5 mb-4">
             <div class="container">
                 <h1 class="display-4 mb-3">Solar Installation Book</h1>
+                <!-- 搜索框 -->
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="search-box">
+                            <div class="input-group">
+                                <input type="text" 
+                                       id="siteSearch" 
+                                       class="form-control" 
+                                       placeholder="搜索安装手册..."
+                                       aria-label="搜索">
+                                <button class="btn btn-light" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                            <!-- 搜索结果容器 -->
+                            <div id="searchResults" class="search-results d-none">
+                                <!-- 结果将通过 JavaScript 动态添加 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -62,6 +84,129 @@
         
     </main>
 
-    
+    <!-- 添加搜索相关的 CSS -->
+    <style>
+        .search-box {
+            position: relative;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .search-results:not(.d-none) {
+            padding: 1rem;
+        }
+
+        .search-result-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .search-result-title {
+            color: #0d6efd;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .search-result-content {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .hero .form-control {
+            background: rgba(255,255,255,0.9);
+        }
+
+        .hero .form-control:focus {
+            background: white;
+        }
+    </style>
+
+    <!-- 搜索功能的 JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('siteSearch');
+            const searchResults = document.getElementById('searchResults');
+            let searchTimeout;
+
+            // 搜索数据（示例）
+            const searchData = [
+                {
+                    title: '准备工作',
+                    content: '现场勘察与沟通、安全讲解、屋顶准备工作',
+                    url: 'preparation.html'
+                },
+                {
+                    title: 'RT MINI安装',
+                    content: 'RT MINI准备、固定RT MINI、安装L-FOOT、最终调整',
+                    url: 'rt-mini.html'
+                },
+                {
+                    title: '工具与材料',
+                    content: '安装工具、安装材料、规格说明',
+                    url: 'tools.html'
+                },
+                // 可以继续添加更多搜索数据
+            ];
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const query = this.value.toLowerCase().trim();
+                    
+                    if (query.length < 2) {
+                        searchResults.classList.add('d-none');
+                        return;
+                    }
+
+                    const filteredResults = searchData.filter(item => 
+                        item.title.toLowerCase().includes(query) || 
+                        item.content.toLowerCase().includes(query)
+                    );
+
+                    if (filteredResults.length > 0) {
+                        searchResults.innerHTML = filteredResults.map(result => `
+                            <div class="search-result-item" onclick="window.location.href='${result.url}'">
+                                <div class="search-result-title">${result.title}</div>
+                                <div class="search-result-content">${result.content}</div>
+                            </div>
+                        `).join('');
+                        searchResults.classList.remove('d-none');
+                    } else {
+                        searchResults.innerHTML = '<div class="p-3 text-center text-muted">未找到相关内容</div>';
+                        searchResults.classList.remove('d-none');
+                    }
+                }, 300);
+            });
+
+            // 点击其他地方关闭搜索结果
+            document.addEventListener('click', function(e) {
+                if (!searchResults.contains(e.target) && e.target !== searchInput) {
+                    searchResults.classList.add('d-none');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
