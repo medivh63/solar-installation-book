@@ -1,75 +1,325 @@
-/* 可以删除基础样式，使用Bootstrap的默认样式 */
+/* 基础布局 */
 body {
-    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
 }
 
-/* 头部导航使用Bootstrap的navbar类 */
-.header {
-    /* ... existing code ... */
-    background-color: #fff;
+main {
+    flex: 1;
+}
+
+/* 导航栏样式 */
+.navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* 使用Bootstrap的container类替代自定义最大宽度 */
-.features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-    /* 删除 max-width 和 margin，改用Bootstrap容器 */
+.navbar-brand {
+    font-weight: 500;
 }
 
-/* 使用Bootstrap的card类优化特色卡片 */
-.feature-card {
-    /* 可以删除这些样式，使用Bootstrap的card类 */
-    padding: 2rem;
-    background: #fff;
+/* 内容区域样式 */
+.tools-table {
+    background-color: white;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 2rem !important;
 }
 
-/* 安全内容区域使用Bootstrap的grid系统 */
-.safety-content {
-    /* 删除max-width，使用Bootstrap的container类 */
-    padding: 20px;
+.tools-table h1 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-weight: 600;
 }
 
-.safety-item {
-    /* 使用Bootstrap的row和col类替代flex */
-    margin-bottom: 40px;
-    padding: 20px;
+.tools-table h2 {
+    color: #34495e;
+    font-size: 1.5rem;
+    margin: 2rem 0 1.5rem;
+    font-weight: 500;
+}
+
+/* 表格样式优化 */
+.table {
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table img {
+    max-height: 150px;
+    object-fit: contain;
+    width: 100%;
+    border-radius: 4px;
+    transition: transform 0.2s;
+}
+
+.table img:hover {
+    transform: scale(1.05);
+}
+
+/* 幻灯片样式优化 */
+.slide-container {
+    background-color: white;
     border-radius: 8px;
-    background-color: #f5f5f5;
-}
-
-.hover-card {
-    transition: transform 0.3s ease;
-}
-
-.hover-card:hover {
-    transform: translateY(-5px);
-}
-
-.hero {
-    background: linear-gradient(to right, #0d6efd, #0dcaf0);
-}
-
-/* 基础样式 */
-.custom-element {
     padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* 中等屏幕 */
-@media (min-width: 768px) {
-    .custom-element {
-        padding: 2rem;
+.slide img {
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.slide-nav button {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.slide-nav button:hover {
+    background-color: #0b5ed7;
+}
+
+/* 页脚样式 */
+footer {
+    margin-top: auto !important;
+    width: 100%;
+    background-color: #343a40;
+}
+
+footer p {
+    margin: 0;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.8);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .tools-table {
+        padding: 1rem !important;
+    }
+
+    .tools-table h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .tools-table h2 {
+        font-size: 1.4rem;
+        margin: 1.5rem 0 1rem;
+    }
+
+    .table {
+        font-size: 14px;
+    }
+    
+    .table img {
+        max-height: 80px;
+    }
+    
+    .table th,
+    .table td {
+        min-width: 120px;
+        padding: 8px;
+    }
+    
+    .slide p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .slide img {
+        max-height: 180px;
     }
 }
 
-/* 大屏幕 */
-@media (min-width: 992px) {
-    .custom-element {
-        padding: 3rem;
+/* 大屏幕显示 */
+@media (min-width: 769px) {
+    .slide-container {
+        display: none;
+    }
+    
+    .table-responsive {
+        display: block;
+    }
+}
+
+/* 图库样式 */
+.gallery-item {
+    position: relative;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: white;
+    transition: transform 0.2s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* 弹出框样式 */
+.modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 1px solid #eee;
+    padding: 1rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-body img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.item-details {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.item-details p {
+    margin-bottom: 0.5rem;
+}
+
+.item-details p:last-child {
+    margin-bottom: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .gallery-item img {
+        height: 150px;
+    }
+    
+    .modal-body img {
+        max-height: 300px;
+    }
+}
+
+/* 调整卡片样式 */
+.tools-gallery .card {
+    border: 1px solid rgba(0,0,0,.125);
+    transition: transform 0.2s;
+}
+
+.tools-gallery .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tools-gallery .card-img-top {
+    height: 120px;
+    object-fit: contain;
+    padding: 0.5rem;
+}
+
+.tools-gallery .card-title {
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .tools-gallery .card-img-top {
+        height: 100px;
+    }
+    
+    .tools-gallery .card-title {
+        font-size: 0.8rem;
+    }
+}
+
+/* 图片卡片样式 */
+.tools-gallery .card {
+    border: 1px solid rgba(0,0,0,.125);
+    transition: transform 0.2s;
+}
+
+.tools-gallery .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tools-gallery .card-img-top {
+    height: 120px;
+    object-fit: contain;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.tools-gallery .card-title {
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Modal 样式 */
+.modal-content {
+    background-color: transparent;
+    border: none;
+}
+
+.modal-header {
+    position: absolute;
+    right: 0;
+    z-index: 1;
+}
+
+.btn-close {
+    background-color: white;
+    opacity: 0.8;
+    border-radius: 50%;
+    margin: 0.5rem;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 0;
+}
+
+.modal-img {
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .tools-gallery .card-img-top {
+        height: 100px;
+    }
+    
+    .tools-gallery .card-title {
+        font-size: 0.8rem;
     }
 }
