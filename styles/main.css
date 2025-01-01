@@ -1,193 +1,75 @@
-/* 基础样式 */
+/* 可以删除基础样式，使用Bootstrap的默认样式 */
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.6;
     color: #333;
 }
 
-/* 头部导航 */
+/* 头部导航使用Bootstrap的navbar类 */
 .header {
-    padding: 1rem;
+    /* ... existing code ... */
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
 }
 
-/* 主要内容区域 */
-.hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    background-color: #f8f9fa;
-}
-
-.hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.hero p {
-    font-size: 1.2rem;
-    color: #666;
-}
-
-/* 特色卡片区域 */
+/* 使用Bootstrap的container类替代自定义最大宽度 */
 .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+    /* 删除 max-width 和 margin，改用Bootstrap容器 */
 }
 
+/* 使用Bootstrap的card类优化特色卡片 */
 .feature-card {
+    /* 可以删除这些样式，使用Bootstrap的card类 */
     padding: 2rem;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-    text-decoration: none;
-    color: inherit;
-    display: block;
 }
 
-.feature-card:hover {
-    transform: translateY(-5px);
-}
-
-/* 统计数据区域 */
-.stats {
-    background-color: #0078d4;
-    color: white;
-    padding: 3rem;
-    text-align: center;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 2rem auto 0;
-}
-
-.stats h3 {
-    font-size: 2.5rem;
-    margin: 0;
-}
-
-/* 页脚 */
-footer {
-    background-color: #f8f9fa;
-    padding: 2rem;
-    text-align: center;
-    color: #666;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .hero h1 {
-        font-size: 2rem;
-    }
-    
-    .features {
-        padding: 1rem;
-    }
-    
-    .stats {
-        padding: 2rem 1rem;
-    }
-} 
-
+/* 安全内容区域使用Bootstrap的grid系统 */
 .safety-content {
-    max-width: 1200px;
-    margin: 0 auto;
+    /* 删除max-width，使用Bootstrap的container类 */
     padding: 20px;
 }
 
 .safety-item {
-    display: flex;
-    gap: 30px;
+    /* 使用Bootstrap的row和col类替代flex */
     margin-bottom: 40px;
     padding: 20px;
     border-radius: 8px;
     background-color: #f5f5f5;
 }
 
-.safety-item img {
-    width: 300px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 4px;
+.hover-card {
+    transition: transform 0.3s ease;
 }
 
-.safety-text {
-    flex: 1;
+.hover-card:hover {
+    transform: translateY(-5px);
 }
 
-.safety-text h2 {
-    color: #333;
-    margin-bottom: 15px;
+.hero {
+    background: linear-gradient(to right, #0d6efd, #0dcaf0);
 }
 
-.safety-text ul {
-    padding-left: 20px;
+/* 基础样式 */
+.custom-element {
+    padding: 1rem;
 }
 
-.safety-text li {
-    margin-bottom: 10px;
-    line-height: 1.6;
-}
-
-nav {
-    padding: 20px;
-    background-color: #f0f0f0;
-}
-
-nav a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-}
-
-nav a:hover {
-    color: #666;
-} 
-
-/* 响应式布局 */
-@media screen and (max-width: 768px) {
-    .safety-item {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .safety-item img {
-        width: 100%;
-        height: 180px;
-    }
-
-    .safety-content {
-        padding: 10px;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-
-    h2 {
-        font-size: 20px;
+/* 中等屏幕 */
+@media (min-width: 768px) {
+    .custom-element {
+        padding: 2rem;
     }
 }
 
-@media screen and (max-width: 480px) {
-    .safety-item {
-        padding: 15px;
+/* 大屏幕 */
+@media (min-width: 992px) {
+    .custom-element {
+        padding: 3rem;
     }
-
-    .safety-item img {
-        height: 150px;
-    }
-} 
+}
