@@ -4,15 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>光伏安装工具与材料</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 自定义CSS -->
     <link rel="stylesheet" href="styles/main.css">
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="index.html">返回</a>
@@ -20,82 +15,77 @@
     </nav>
 
     <main class="container py-5">
-        <div class="table-responsive">
+        <!-- 工具表格 -->
+        <h3 class="mb-4">安装工具</h3>
+        <div class="table-responsive mb-5">
             <table class="table table-striped table-hover align-middle stripe-light">
                 <thead>
                     <tr>
-                        <th scope="col">
-                            图片<br>
-                            <span class="text-muted small">Image</span>
-                        </th>
-                        <th scope="col">
-                            名称<br>
-                            <span class="text-muted small">Name</span>
-                        </th>
-                        <th scope="col">
-                            描述<br>
-                            <span class="text-muted small">Description</span>
-                        </th>
-                        <th scope="col">
-                            规格<br>
-                            <span class="text-muted small">Specification</span>
-                        </th>
+                        <th scope="col">图片<br><span class="text-muted small">Image</span></th>
+                        <th scope="col">名称<br><span class="text-muted small">Name</span></th>
+                        <th scope="col">描述<br><span class="text-muted small">Description</span></th>
+                        <th scope="col">规格<br><span class="text-muted small">Specification</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <img 
-                                src="https://s2.loli.net/2025/01/01/46k1fYlPNiyX3Dg.png" 
+                            <img src="https://s2.loli.net/2025/01/01/46k1fYlPNiyX3Dg.png" 
                                 alt="Roof anchor"
                                 class="tool-img"
                                 data-bs-toggle="modal"
-                                data-bs-target="#imageModal"
-                            >
+                                data-bs-target="#imageModal">
                         </td>
                         <td>Roof anchor</td>
                         <td>屋顶锚固件</td>
                         <td>标准规格</td>
                     </tr>
-                    <!-- 可以继续添加更多行 -->
                     <tr>
                         <td>
-                            <img 
-                                src="https://s2.loli.net/2025/01/01/XvjJrqFUCw7WH8Q.png" 
-                                alt=" Harness，Safety robe"
+                            <img src="https://s2.loli.net/2025/01/01/XvjJrqFUCw7WH8Q.png" 
+                                alt="Harness，Safety robe"
                                 class="tool-img"
                                 data-bs-toggle="modal"
-                                data-bs-target="#imageModal"
-                            >
+                                data-bs-target="#imageModal">
                         </td>
                         <td>Harness，Safety robe</td>
                         <td>安全带，安全衣</td>
                         <td>标准规格</td>
                     </tr>
-                    <tr>
-                        <td>
-                            <img 
-                                src="https://s2.loli.net/2025/01/01/HUDq5dfB36gls81.png" 
-                                alt=" Harness，Safety robe"
-                                class="tool-img"
-                                data-bs-toggle="modal"
-                                data-bs-target="#imageModal"
-                            >
-                        </td>
-                        <td>RT MINI</td>
-                        <td>RT MINI</td>
-                        <td>标准规格</td>
-                    </tr>   
-
-
-
-
-
                 </tbody>
             </table>
         </div>
 
-        <!-- Modal -->
+        <!-- 材料表格 -->
+        <h3 class="mb-4">安装材料</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle stripe-light">
+                <thead>
+                    <tr>
+                        <th scope="col">图片<br><span class="text-muted small">Image</span></th>
+                        <th scope="col">名称<br><span class="text-muted small">Name</span></th>
+                        <th scope="col">描述<br><span class="text-muted small">Description</span></th>
+                        <th scope="col">规格<br><span class="text-muted small">Specification</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img src="https://s2.loli.net/2025/01/01/HUDq5dfB36gls81.png" 
+                                alt="RT MINI"
+                                class="tool-img"
+                                data-bs-toggle="modal"
+                                data-bs-target="#imageModal">
+                        </td>
+                        <td>RT MINI</td>
+                        <td>RT MINI</td>
+                        <td>标准规格</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 图片模态框 -->
         <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -110,9 +100,9 @@
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 为所有工具图片添加点击事件
         document.querySelectorAll('.tool-img').forEach(img => {
             img.style.cursor = 'pointer';
             img.addEventListener('click', function() {
