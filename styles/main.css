@@ -96,3 +96,135 @@ main {
         padding: 0.75rem;
     }
 }
+
+/* 列表项样式 */
+.card-text ul li {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+}
+
+.card-text ul li i {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+}
+
+/* 图标样式 */
+.bi-check-circle {
+    color: #198754;
+}
+
+.bi-exclamation-triangle {
+    color: #ffc107;
+}
+
+/* 卡片样式优化 */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.card-title {
+    color: #0d6efd;
+    margin-bottom: 1rem;
+}
+
+/* 时间轴基础样式 */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* 圆形数字样式 */
+.timeline-badge {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0d6efd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+}
+
+.step-number {
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.timeline-content {
+    width: calc(50% - 30px);
+    margin-left: auto;
+    position: relative;
+}
+
+.timeline-item:nth-child(even) .timeline-content {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* 卡片样式 */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.card-title {
+    color: #0d6efd;
+    margin-bottom: 1rem;
+}
+
+/* 列表样式 */
+.card-text ul li {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+}
+
+.card-text ul li i {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 40px;
+    }
+
+    .timeline-badge {
+        left: 40px;
+    }
+
+    .timeline-content {
+        width: calc(100% - 80px);
+        margin-left: 80px !important;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+        margin-right: 0;
+    }
+}
