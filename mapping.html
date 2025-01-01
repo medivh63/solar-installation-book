@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>屋顶测绘</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        #drawingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+        }
+
+        .toolbar {
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .rectangle {
+            position: absolute;
+            background: rgba(13, 110, 253, 0.2);
+            border: 2px solid #0d6efd;
+            cursor: move;
+            user-select: none;
+        }
+
+        .rectangle.selected {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.2);
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border: 2px solid #0d6efd;
+            border-radius: 50%;
+        }
+
+        .resize-handle.nw { top: -5px; left: -5px; cursor: nw-resize; }
+        .resize-handle.ne { top: -5px; right: -5px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -5px; left: -5px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -5px; right: -5px; cursor: se-resize; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="installation.html">
+                <i class="bi bi-arrow-left"></i> 返回
+            </a>
+        </div>
+    </nav>
+
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">屋顶测绘</h2>
+                
+                <!-- 工具栏 -->
+                <div class="toolbar">
+                    <button id="addRect" class="btn btn-primary">
+                        <i class="bi bi-plus-square"></i> 添加矩形
+                    </button>
+                    <button id="deleteRect" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> 删除选中
+                    </button>
+                    <button id="clearCanvas" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> 清空画布
+                    </button>
+                </div>
+
+                <!-- 画布容器 -->
+                <div class="canvas-container">
+                    <div id="drawingArea"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class RectangleDrawer {
+            constructor() {
+                this.drawingArea = document.getElementById('drawingArea');
+                this.selectedRect = null;
+                this.rectangles = [];
+                this.isDragging = false;
+                this.isResizing = false;
+                this.dragOffset = { x: 0, y: 0 };
+                this.resizeHandle = null;
+
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // 添加矩形按钮
+                document.getElementById('addRect').addEventListener('click', () => {
+                    this.createRectangle(50, 50, 200, 100);
+                });
+
+                // 删除选中矩形按钮
+                document.getElementById('deleteRect').addEventListener('click', () => {
+                    if (this.selectedRect) {
+                        this.drawingArea.removeChild(this.selectedRect);
+                        this.rectangles = this.rectangles.filter(r => r !== this.selectedRect);
+                        this.selectedRect = null;
+                    }
+                });
+
+                // 清空画布按钮
+                document.getElementById('clearCanvas').addEventListener('click', () => {
+                    this.drawingArea.innerHTML = '';
+                    this.rectangles = [];
+                    this.selectedRect = null;
+                });
+
+                // 全局鼠标事件
+                document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+                document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+            }
+
+            createRectangle(x, y, width, height) {
+                const rect = document.createElement('div');
+                rect.className = 'rectangle';
+                rect.style.left = x + 'px';
+                rect.style.top = y + 'px';
+                rect.style.width = width + 'px';
+                rect.style.height = height + 'px';
+
+                // 添加调整大小的手柄
+                ['nw', 'ne', 'sw', 'se'].forEach(pos => {
+                    const handle = document.createElement('div');
+                    handle.className = `resize-handle ${pos}`;
+                    rect.appendChild(handle);
+                });
+
+                rect.addEventListener('mousedown', this.handleRectMouseDown.bind(this));
+                rect.querySelectorAll('.resize-handle').forEach(handle => {
+                    handle.addEventListener('mousedown', (e) => {
+                        this.handleResizeStart(e, rect, handle);
+                    });
+                });
+
+                this.drawingArea.appendChild(rect);
+                this.rectangles.push(rect);
+                this.selectRectangle(rect);
+            }
+
+            selectRectangle(rect) {
+                if (this.selectedRect) {
+                    this.selectedRect.classList.remove('selected');
+                }
+                this.selectedRect = rect;
+                if (rect) {
+                    rect.classList.add('selected');
+                }
+            }
+
+            handleRectMouseDown(e) {
+                if (e.target.classList.contains('resize-handle')) return;
+                
+                const rect = e.currentTarget;
+                this.selectRectangle(rect);
+                this.isDragging = true;
+                
+                const rectBounds = rect.getBoundingClientRect();
+                this.dragOffset = {
+                    x: e.clientX - rectBounds.left,
+                    y: e.clientY - rectBounds.top
+                };
+                
+                e.preventDefault();
+            }
+
+            handleResizeStart(e, rect, handle) {
+                e.stopPropagation();
+                this.isResizing = true;
+                this.resizeHandle = handle;
+                this.selectRectangle(rect);
+            }
+
+            handleMouseMove(e) {
+                if (this.isDragging && this.selectedRect) {
+                    const containerBounds = this.drawingArea.getBoundingClientRect();
+                    let newX = e.clientX - containerBounds.left - this.dragOffset.x;
+                    let newY = e.clientY - containerBounds.top - this.dragOffset.y;
+
+                    // 限制在容器内
+                    newX = Math.max(0, Math.min(newX, containerBounds.width - this.selectedRect.offsetWidth));
+                    newY = Math.max(0, Math.min(newY, containerBounds.height - this.selectedRect.offsetHeight));
+
+                    this.selectedRect.style.left = newX + 'px';
+                    this.selectedRect.style.top = newY + 'px';
+                }
+                else if (this.isResizing && this.selectedRect) {
+                    const containerBounds = this.drawingArea.getBoundingClientRect();
+                    const rectBounds = this.selectedRect.getBoundingClientRect();
+                    const pos = this.resizeHandle.classList[1];
+
+                    let newWidth, newHeight, newX, newY;
+
+                    switch (pos) {
+                        case 'se':
+                            newWidth = e.clientX - rectBounds.left;
+                            newHeight = e.clientY - rectBounds.top;
+                            break;
+                        case 'sw':
+                            newWidth = rectBounds.right - e.clientX;
+                            newHeight = e.clientY - rectBounds.top;
+                            newX = e.clientX - containerBounds.left;
+                            break;
+                        case 'ne':
+                            newWidth = e.clientX - rectBounds.left;
+                            newHeight = rectBounds.bottom - e.clientY;
+                            newY = e.clientY - containerBounds.top;
+                            break;
+                        case 'nw':
+                            newWidth = rectBounds.right - e.clientX;
+                            newHeight = rectBounds.bottom - e.clientY;
+                            newX = e.clientX - containerBounds.left;
+                            newY = e.clientY - containerBounds.top;
+                            break;
+                    }
+
+                    if (newWidth && newWidth > 50) {
+                        this.selectedRect.style.width = newWidth + 'px';
+                        if (newX !== undefined) {
+                            this.selectedRect.style.left = newX + 'px';
+                        }
+                    }
+
+                    if (newHeight && newHeight > 50) {
+                        this.selectedRect.style.height = newHeight + 'px';
+                        if (newY !== undefined) {
+                            this.selectedRect.style.top = newY + 'px';
+                        }
+                    }
+                }
+            }
+
+            handleMouseUp() {
+                this.isDragging = false;
+                this.isResizing = false;
+                this.resizeHandle = null;
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new RectangleDrawer();
+        });
+    </script>
+</body>
+</html> 
